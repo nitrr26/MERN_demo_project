@@ -1,0 +1,17 @@
+1) Create a folder here name - server and npm init
+2) Install express and nodemon
+3) Git init and make .gitignore file add file name - node_modules inside it
+3) Setup basic routes in server.js file
+4) Learn about middlewares
+5) Install mongoose run - npm i mongoose
+6) Create accout in mongodb.com and create a new collection 
+7) Connect mongo atlas to your project
+8) Install dotenv run- npm i dotenv
+9) Create config.env file in main folder, move the code with password to the config.env file
+9) Add file name config.env inside .gitignore
+10) Create folder db and move the db route inside it within a file connection.js
+11) Create folder models inside main folder and create a model userSchema.js inside that folder
+12) Create user schema with the help of mongoose
+13) Create folder router in main folder and auth.js inside it write code for post res for resgistration form here
+14) Check if the post request is working or not with the help of postmen
+

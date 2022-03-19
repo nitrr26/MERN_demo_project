@@ -2,11 +2,14 @@ const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const express = require('express')
 const app = express()
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000
 
 dotenv.config({path: './config.env'})
 require('./db/connection')
-// const User = require('./models/userschema')
+const User = require('./models/userschema')
+app.use(express.json())
+
+app.use(require('./router/auth'))
 
 
 
@@ -23,14 +26,14 @@ require('./db/connection')
 // });
 
 
-app.get('/', (req, res) =>{
-    res.send("hello from home page")
-});
+// app.get('/', (req, res) =>{
+//     res.send("hello from home page")
+// });
 
-app.get('/about', (req, res) =>{
-    res.send("hello from about page")
+// app.get('/about', (req, res) =>{
+//     res.send("hello from about page")
    
-});
+// });
 
 app.get('/signup', (req, res) =>{
     res.send("hello from signup page")
