@@ -5,7 +5,7 @@ const About = () => {
 
     const navigate = useNavigate();
 
-    const [userData, setUserData] = useState();
+    const [userData, setUserData] = useState({});
     // const [userData, setUserData] = useState({}); agar upar wala line na chale to ye try karna h 
     console.log(userData);
     const callAboutpage = async () => {

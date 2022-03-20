@@ -21,11 +21,11 @@ const Authenticate = require('../middlewares/Authenticate')
 
 require('../db/connection')
 const User = require('../models/userschema');
-const { application } = require('express');
+// const { application } = require('express');
 
-router.get('/', (req, res) =>{
-    res.send("hello from router root page")
-});
+// router.get('/', (req, res) =>{
+//     res.send("hello from router root page")
+// });
 
 
 ////promises
@@ -61,7 +61,7 @@ router.get('/', (req, res) =>{
 
 //async await
 
-router.post('/register', async (req, res) => {  
+router.post('/register', async (req, res) => {
 
     const { name, email, phone, work, password, cpassword } = req.body;
     // console.log(req.body);
@@ -70,26 +70,26 @@ router.post('/register', async (req, res) => {
     // console.log(email)
     // console.log(work)
 
-    if(!name || !email || !phone || !work || !password || !cpassword){
-        return res.status(423).json({error: "error"})
+    if (!name || !email || !phone || !work || !password || !cpassword) {
+        return res.status(423).json({ error: "error" })
     }
 
-    try{
-        const userExist = await User.findOne({email : email});
-        if(userExist){
-            return res.status(422).json({error: "email already exist"});
+    try {
+        const userExist = await User.findOne({ email: email });
+        if (userExist) {
+            return res.status(422).json({ error: "email already exist" });
         }
-        else if(password != cpassword){
-            return res.status(422).json({error: "Password missmatch"});
+        else if (password != cpassword) {
+            return res.status(422).json({ error: "Password missmatch" });
         }
-        else{
-            const user = new User({name, email, phone, work, password, cpassword});
-            await user.save();        
-            res.status(201).json({message: "Registered successfully"});
+        else {
+            const user = new User({ name, email, phone, work, password, cpassword });
+            await user.save();
+            res.status(201).json({ message: "Registered successfully" });
         }
 
         // const userRegister = await user.save();
-        
+
         // if(userRegister){
         //     res.status(201).json({message: "Registered successfully"});
         // }
@@ -98,7 +98,7 @@ router.post('/register', async (req, res) => {
         // }
 
 
-    }catch(err){
+    } catch (err) {
         console.log(err);
     }
 
@@ -112,20 +112,20 @@ router.post('/login', async (req, res) => {
     // console.log(req.body);
     // res.json({message: "done"});
 
-    try{
+    try {
         let token;
 
-        const {email , password} = req.body;
+        const { email, password } = req.body;
 
-        if(!email || !password){
-            return res.status(422).json({error: "All field require.."});
+        if (!email || !password) {
+            return res.status(422).json({ error: "All field require.." });
         }
-       
-        const userLogin = await User.findOne({email:email});
+
+        const userLogin = await User.findOne({ email: email });
 
         // console.log(userLogin);
 
-        if(userLogin){
+        if (userLogin) {
             const isSame = await bcrypt.compare(password, userLogin.password);
 
 
@@ -139,20 +139,20 @@ router.post('/login', async (req, res) => {
             });
 
 
-            if(!isSame){
-                res.status(400).json({message: "invalid credintial"})
+            if (!isSame) {
+                res.status(400).json({ message: "invalid credintial" })
             }
-            else{
-             res.json({message: "Login successsful"});
+            else {
+                res.json({ message: "Login successsful" });
             }
 
         }
-        else{
+        else {
             console.log("email not found");
-            res.status(400).json({message: "go to registration page"});
+            res.status(400).json({ message: "go to registration page" });
         }
 
-    } catch(err){
+    } catch (err) {
         console.log(err);
     }
 
@@ -162,11 +162,66 @@ router.post('/login', async (req, res) => {
 
 //about us
 
-router.get('/about', Authenticate, (req, res) =>{
-    console.log("about");
-    console.log(req.rootUser);
+router.get('/about', Authenticate, (req, res) => {
+    // console.log("about");
+    // console.log(req.rootUser);
     res.send(req.rootUser);
-   
+
 });
+
+
+
+// get data
+router.get('/getdata', Authenticate, (req, res) => {
+    console.log("contact test");
+    // console.log(req.rootUser);
+    res.send(req.rootUser);
+
+});
+
+
+//contact data
+router.post('/contact', Authenticate, async (req, res) => {
+    try {
+
+        const { name, email, message } = req.body;
+        console.log(req.body);
+
+        if (!name || !email || !message) {
+            console.log(`please fill the complete form `);
+            alert('please fill the complete form')
+            return res.json({ error: "please fill the complete form " })
+        }
+
+        const userContact = await User.findOne({_id:req.userID})
+
+        console.log(userContact);
+
+        if (userContact) {
+            const userMessage = await userContact.addMessage(name, email, message);
+
+            await userContact.save();
+            res.status(201).json({ message: "contacted.." })
+        }
+
+
+    } catch (err) {
+        console.log(err);
+    }
+
+});
+
+
+
+
+
+router.get('/logout', Authenticate, (req, res) => {
+    console.log("logout");
+    // console.log(req.rootUser);
+    res.clearCookie('jwtoken', {path:'/'});
+    res.status(200).send("user logout");
+
+});
+
 
 module.exports = router;

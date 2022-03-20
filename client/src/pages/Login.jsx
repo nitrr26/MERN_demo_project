@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { NavLink, useNavigate } from 'react-router-dom';
-// import loginimg from '../images/login-page.png';
 
+import {UserContext} from "../App"
 
 const Login = () => {
+
+
+    const {state, dispatch} = useContext(UserContext);
+    console.log(UserContext);
+
+
     const navigate = useNavigate();
     const [user, setUser] = useState({
         email: "",
@@ -21,7 +27,7 @@ const Login = () => {
     const PostData = async (e) => {
         e.preventDefault();
 
-        const { email, password} = user;
+        const { email, password } = user;
         // console.log(email);
         // console.log(password);
 
@@ -29,13 +35,16 @@ const Login = () => {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
-               email, password
+                email, password
             })
         });
 
 
         await res.json();
         if (res.status === 200) {
+            ////////
+            dispatch({type:"USER", payload:true});
+
             console.log("login successfully");
             navigate('/')
         }
